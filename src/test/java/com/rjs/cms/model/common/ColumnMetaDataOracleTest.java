@@ -1,7 +1,7 @@
 package com.rjs.cms.model.common;
 
-import com.rjs.cms.model.RoleAndType;
-import com.rjs.cms.model.TableInfo;
+import com.rjs.cms.model.enity.RoleAndType;
+import com.rjs.cms.model.enity.TableInfo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
-@ActiveProfiles("oracle")
+@SpringBootTest(properties="cms.db.type=oracle")
 public class ColumnMetaDataOracleTest {
     @Autowired
     ConvertDataTypeToString convertDataTypeToString;

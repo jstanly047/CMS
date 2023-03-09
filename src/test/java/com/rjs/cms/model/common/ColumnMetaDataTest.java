@@ -1,7 +1,7 @@
 package com.rjs.cms.model.common;
 
-import com.rjs.cms.model.RoleAndType;
-import com.rjs.cms.model.TableInfo;
+import com.rjs.cms.model.enity.RoleAndType;
+import com.rjs.cms.model.enity.TableInfo;
 import org.junit.Test;
 
 import java.util.function.BiConsumer;

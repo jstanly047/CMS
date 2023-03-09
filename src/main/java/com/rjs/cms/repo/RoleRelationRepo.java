@@ -1,6 +1,6 @@
 package com.rjs.cms.repo;
 
-import com.rjs.cms.model.RoleRelation;
+import com.rjs.cms.model.enity.RoleRelation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

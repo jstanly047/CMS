@@ -1,7 +1,7 @@
 package com.rjs.cms.service.db;
 
-import com.rjs.cms.model.Role;
-import com.rjs.cms.model.RoleRelation;
+import com.rjs.cms.model.enity.Role;
+import com.rjs.cms.model.enity.RoleRelation;
 import com.rjs.cms.repo.RoleRelationRepo;
 import com.rjs.cms.repo.RoleRepo;
 import lombok.Data;
@@ -128,7 +128,7 @@ public class RoleInfoCache {
     }
 
     public long getRoleValue(String role){
-        RoleNode roleNode = rolesCache.get(role);
+        RoleNode roleNode = rolesCache.get(role.toUpperCase());
         return roleNode != null ? roleNode.roleId : 0L;
     }
 }

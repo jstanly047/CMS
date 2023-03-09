@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.function.BiConsumer;
@@ -15,11 +14,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(properties="cms.db.type=h2db")
-public class ColumnMetaDataH2DBTest {
+@SpringBootTest(properties="cms.db.type=mssql")
+public class ColumnMetaDataMSTest {
     @Autowired
     ConvertDataTypeToString convertDataTypeToString;
-    
+
     @Test
     public void checkGetCreateSQLColumn(){
         try {
@@ -29,29 +28,29 @@ public class ColumnMetaDataH2DBTest {
             };
 
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.HIDDEN.getValue(), HashType.MD5.getValue()), 4, DataType.STRING.getValue(), 60),
-                     "FN VARCHAR(60), FN_show VARCHAR(4), FN_meta BIGINT");
+                     "FN NVARCHAR(60), FN_show NVARCHAR(4), FN_meta BIGINT");
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.PROTECTED.getValue(), HashType.MD5.getValue()), 4, DataType.STRING.getValue(), 60),
-                         "FN VARCHAR(60), FN_meta BIGINT");
+                         "FN NVARCHAR(60), FN_meta BIGINT");
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.NORMAL.getValue(), HashType.NONE.getValue()), 4, DataType.CHAR.getValue(), 60),
-                         "FN CHAR, FN_meta BIGINT");
+                         "FN NVARCHAR(1), FN_meta BIGINT");
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.NORMAL.getValue(), HashType.NONE.getValue()), 4, DataType.SHORT.getValue(), 60),
-                         "FN SMALLINT, FN_meta BIGINT");
+                         "FN INT, FN_meta BIGINT");
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.NORMAL.getValue(), HashType.NONE.getValue()), 4, DataType.INTEGER.getValue(), 60),
                          "FN INT, FN_meta BIGINT");
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.NORMAL.getValue(), HashType.NONE.getValue()), 4, DataType.LONG.getValue(), 60),
                          "FN BIGINT, FN_meta BIGINT");
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.NORMAL.getValue(), HashType.NONE.getValue()), 4, DataType.FLOAT.getValue(), 60),
-                         "FN REAL, FN_meta BIGINT");
+                         "FN FLOAT, FN_meta BIGINT");
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.NORMAL.getValue(), HashType.NONE.getValue()), 4, DataType.DOUBLE.getValue(), 60),
-                         "FN DOUBLE, FN_meta BIGINT");
+                         "FN FLOAT, FN_meta BIGINT");
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.NORMAL.getValue(), HashType.NONE.getValue()), 4, DataType.BOOLEAN.getValue(), 60),
-                         "FN BOOLEAN, FN_meta BIGINT");
+                         "FN BIT, FN_meta BIGINT");
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.NORMAL.getValue(), HashType.NONE.getValue()), 4, DataType.DATE.getValue(), 60),
                          "FN DATE, FN_meta BIGINT");
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.NORMAL.getValue(), HashType.NONE.getValue()), 4, DataType.TIME.getValue(), 60),
                          "FN TIME, FN_meta BIGINT");
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.NORMAL.getValue(), HashType.NONE.getValue()), 4, DataType.DATE_TIME.getValue(), 60),
-                         "FN TIMESTAMP, FN_meta BIGINT");
+                         "FN DATETIME2, FN_meta BIGINT");
         }
         catch (Exception e)
         {

@@ -1,7 +1,7 @@
 package com.rjs.cms.model.common;
 
-import com.rjs.cms.model.RoleAndType;
-import com.rjs.cms.model.TableInfo;
+import com.rjs.cms.model.enity.RoleAndType;
+import com.rjs.cms.model.enity.TableInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -49,7 +49,7 @@ public class ColumnMetaData {
             sql.append(size);
             sql.append(")");
 
-            if (roleAndType.getType() == FieldType.HIDDEN.getValue()){
+            if (isHidden()){
                 sql.append(", ");
                 sql.append(name);
                 sql.append(postFixShow);
@@ -89,6 +89,10 @@ public class ColumnMetaData {
         sql.append(name);
         sql.append(postFixMeta);
         return sql.toString();
+    }
+
+    boolean isHidden() {
+        return roleAndType.getType() == FieldType.HIDDEN.getValue();
     }
 }
 

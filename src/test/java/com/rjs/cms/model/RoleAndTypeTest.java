@@ -2,6 +2,7 @@ package com.rjs.cms.model;
 
 import com.rjs.cms.model.common.FieldType;
 import com.rjs.cms.model.common.HashType;
+import com.rjs.cms.model.enity.RoleAndType;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

@@ -1,7 +1,8 @@
 package com.rjs.cms.model.common;
 
-import com.rjs.cms.model.UserInfo;
+import com.rjs.cms.model.restapi.UserInfo;
 import lombok.Data;
+import org.springframework.data.util.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,29 +50,32 @@ public class TableMetaData {
         return queryStr.toString();
     }
 
-    public ReturnValue<String> getColumnsForSQL(final UserInfo userInfo){
-        ReturnValue<String> returnValue = new ReturnValue<>();
+    public ReturnValue<Pair<String, Integer>> getColumnsForSQL(final UserInfo userInfo){
+        ReturnValue<Pair<String, Integer>> returnValue = new ReturnValue<>();
 
         if (!tableName.equals(userInfo.getDomain())) {
-            returnValue.fail(Notification.getTableNotFoundNotification(userInfo.getDomain()));
+            returnValue.fail(Notification.getTableNotFound(userInfo.getDomain()));
             return returnValue;
         }
 
         StringBuilder columns = new StringBuilder();
+        int countFields = 0;
 
         for (String property : userInfo.getProperties()){
             ColumnMetaData columnMetaData = columnMetaDataMap.get(property);
 
             if (columnMetaData == null){
-                returnValue.fail(Notification.getColumnNotFoundNotification(userInfo.getDomain(), property));
+                returnValue.fail(Notification.getColumnNotFound(userInfo.getDomain(), property));
                 return returnValue;
             }
 
             columns.append(columnMetaData.getSQLColumn());
             columns.append(", ");
+            int fields = columnMetaData.isHidden() ? 3 : 2;
+            countFields += fields;
         }
         columns.delete(columns.length()-2, columns.length());
-        returnValue.setValue(columns.toString());
+        returnValue.setValue(Pair.of(columns.toString(), countFields));
         return returnValue;
     }
 

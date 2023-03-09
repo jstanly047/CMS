@@ -9,31 +9,31 @@ import org.springframework.context.annotation.Configuration;
 public class StringConverterConfig {
 
     @Bean
-    @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "oracle")
+    @ConditionalOnProperty(name = "cms.db.type", havingValue = "oracle")
     public StringConverter oracleStringConverter(){
         return new OracleStringConverter();
     }
 
     @Bean
-    @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "mysql")
+    @ConditionalOnProperty(name = "cms.db.type", havingValue = "mysql")
     public StringConverter mySqlStringConverter(){
         return new MySqlStringConverter();
     }
 
     @Bean
-    @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "mssql")
+    @ConditionalOnProperty(name = "cms.db.type", havingValue = "mssql")
     public StringConverter msStringConverter(){
         return new MSStringConverter();
     }
 
     @Bean
-    @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "postgre")
+    @ConditionalOnProperty(name = "cms.db.type", havingValue = "postgre")
     public StringConverter postgreSQLStringConverter(){
         return new PostgreSQLStringConverter();
     }
 
     @Bean
-    @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "h2db")
+    @ConditionalOnProperty(name = "cms.db.type", havingValue = "h2db")
     public StringConverter h2DBStringConverter(){
         return new H2DBStringConverter();
     }

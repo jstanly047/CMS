@@ -1,7 +1,7 @@
 package com.rjs.cms.model.common;
 
-import com.rjs.cms.model.RoleAndType;
-import com.rjs.cms.model.TableInfo;
+import com.rjs.cms.model.enity.RoleAndType;
+import com.rjs.cms.model.enity.TableInfo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
-@ActiveProfiles("mysql")
+@SpringBootTest(properties="cms.db.type=mysql")
 public class ColumnMetaDataMySqlTest {
     @Autowired
     ConvertDataTypeToString convertDataTypeToString;
@@ -48,7 +47,7 @@ public class ColumnMetaDataMySqlTest {
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.NORMAL.getValue(), HashType.NONE.getValue()), 4, DataType.DATE.getValue(), 60),
                          "FN DATE, FN_meta BIGINT");
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.NORMAL.getValue(), HashType.NONE.getValue()), 4, DataType.TIME.getValue(), 60),
-                         "FN TIME, FN_meta BIGINT");
+                         "FN DATETIME, FN_meta BIGINT");
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.NORMAL.getValue(), HashType.NONE.getValue()), 4, DataType.DATE_TIME.getValue(), 60),
                          "FN DATETIME, FN_meta BIGINT");
         }

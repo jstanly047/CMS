@@ -1,7 +1,6 @@
 package com.rjs.cms.service.db;
 
-import com.rjs.cms.model.TableInfo;
-import com.rjs.cms.model.UserInfo;
+import com.rjs.cms.model.enity.TableInfo;
 import com.rjs.cms.model.common.ColumnMetaData;
 import com.rjs.cms.model.common.TableMetaData;
 import com.rjs.cms.repo.TableInfoRepo;

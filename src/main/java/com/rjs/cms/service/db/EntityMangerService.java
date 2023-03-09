@@ -1,16 +1,19 @@
 package com.rjs.cms.service.db;
 
-import com.rjs.cms.model.*;
 import com.rjs.cms.model.common.*;
-import com.rjs.cms.repo.TableInfoRepo;
+import com.rjs.cms.model.enity.RoleAndType;
+import com.rjs.cms.model.restapi.TableMeta;
+import com.rjs.cms.model.restapi.UserInfo;
+import com.rjs.cms.model.restapi.UserInfoUpdate;
 import lombok.Data;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -75,7 +78,7 @@ public class EntityMangerService {
             resultList = query.getResultList();
         }
         catch (Exception e){
-            retValue.put("notification", Notification.getDBExceptionNotification(e.getMessage()));
+            retValue.put("notification", Notification.getDBException(e.getMessage()));
             return  retValue;
         }
 
@@ -87,7 +90,7 @@ public class EntityMangerService {
         return retValue;
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @Transactional
     public TableMetaData createTable(final TableMeta addTable) throws Exception {
 
         if (tableMetaDataCache.contains(addTable.getName())){
@@ -100,37 +103,75 @@ public class EntityMangerService {
         return result == 0 ? tableMetaData : null;
     }
 
+    @Transactional
     public Notification updateUserData(final UserInfoUpdate userInfoUpdate){
         TableMetaData tableMetaData = tableMetaDataCache.getTableMeta(userInfoUpdate.getDomain());
 
         if (tableMetaData == null){
-            return Notification.getTableNotFoundNotification(userInfoUpdate.getDomain());
+            return Notification.getTableNotFound(userInfoUpdate.getDomain());
         }
 
-        ReturnValue<String> columnsForSQLRetVal = tableMetaData.getColumnsForSQL(userInfoUpdate);
+        ReturnValue<Pair<String, Integer>> columnsForSQLRetVal = tableMetaData.getColumnsForSQL(userInfoUpdate);
 
         if (!columnsForSQLRetVal.isSuccess()){
             return columnsForSQLRetVal.getNotification();
         }
 
-        String numberOfParameters = ",?".repeat(userInfoUpdate.getProperties().size() - 1);
+        String numberOfParameters = ",?".repeat( columnsForSQLRetVal.getValue().getSecond()- 1);
         String insertSQL = "INSERT INTO " +  userInfoUpdate.getDomain() +
-                " (user_id, " + columnsForSQLRetVal.getValue() + ") VALUES (?,?," + numberOfParameters + ")";
+                " (user_id, " + columnsForSQLRetVal.getValue().getFirst() + ") VALUES (?,?" + numberOfParameters + ")";
         Query query = entityManager.createNativeQuery(insertSQL);
-        int i = 1;
+        int pIndex = 1;
 
-        query.setParameter(i, userInfoUpdate.getUserID());
-        for (Object value : userInfoUpdate.getValues()){
-            query.setParameter(++i, value);
-        }
+        query.setParameter(pIndex++, userInfoUpdate.getUserID());
 
         try {
+            int propertyIndex = 0;
+            for (UserInfoUpdate.ColumnInfo columnValue : userInfoUpdate.getColumnsValues())
+            {
+                ColumnMetaData columnMetaData = tableMetaData.getColumnMetaData(userInfoUpdate.getProperties().get(propertyIndex));
+                query.setParameter(pIndex++, columnValue.getValue());
+                Long role = 0L;
+
+
+                if (columnValue.getRole().isEmpty()) {
+                    role = columnMetaData.getRoleAndType().getRole();
+                }
+                else{
+                    role = roleInfoCache.getRoleValue(columnValue.getRole());
+                }
+
+                if (role == 0L)
+                {
+                    return Notification.getRoleNotFound(tableMetaData.getTableName(), columnMetaData.getName(), columnValue.getRole());
+                }
+
+                Long fieldType = columnMetaData.getRoleAndType().getType();
+
+                if (columnValue.getFieldType().isEmpty() == false && columnMetaData.getRoleAndType().getType() == FieldType.NORMAL.getValue()) {
+                    fieldType = FieldType.valueOf(columnValue.getFieldType()).getValue();
+
+                    if (fieldType == FieldType.HIDDEN.getValue() && columnMetaData.getRoleAndType().getType() != FieldType.HIDDEN.getValue()){
+                        return Notification.getCannotSetHidden(tableMetaData.getTableName(), columnMetaData.getName(), userInfoUpdate.getUserID());
+                    }
+                }
+
+                RoleAndType roleAndType = RoleAndType.createRoleAndType(role, fieldType, columnMetaData.getRoleAndType().getHashType());
+
+                if (roleAndType.getType() == FieldType.HIDDEN.getValue()){
+                    query.setParameter(pIndex++, columnValue.getShowValue());
+                }
+
+                query.setParameter(pIndex++, roleAndType.getRoleAndType());
+                propertyIndex++;
+            }
+
             query.executeUpdate();
         }catch (Exception e){
-            return Notification.getDBExceptionNotification(e.getMessage());
+            return Notification.getDBException(e.getMessage());
         }
 
-        return Notification.getSuccessNotification();
+        return Notification.getSuccess();
     }
 
     public TreeMap<String, Object> readUserData(final UserInfo userInfo, final long userRole) {
@@ -138,11 +179,11 @@ public class EntityMangerService {
 
         if (tableMetaData == null){
             TreeMap<String, Object> retVal = new TreeMap<>();
-            retVal.put("notification", Notification.getTableNotFoundNotification(userInfo.getDomain()));
+            retVal.put("notification", Notification.getTableNotFound(userInfo.getDomain()));
             return retVal;
         }
 
-        ReturnValue<String> columnsForSQLRetVal = tableMetaData.getColumnsForSQL(userInfo);
+        ReturnValue<Pair<String, Integer>> columnsForSQLRetVal = tableMetaData.getColumnsForSQL(userInfo);
 
         if (!columnsForSQLRetVal.isSuccess()){
             TreeMap<String, Object> retVal = new TreeMap<>();
@@ -151,7 +192,7 @@ public class EntityMangerService {
         }
 
         // userInfo.getDomain() been checked with cache for table names. so there can't be sql injections.
-        String queryString = "SELECT " + columnsForSQLRetVal.getValue() + " FROM " + userInfo.getDomain() + " where user_id = '" + userInfo.getUserID() + "'";
+        String queryString = "SELECT " + columnsForSQLRetVal.getValue().getFirst() + " FROM " + userInfo.getDomain() + " where user_id = '" + userInfo.getUserID() + "'";
         return getQueryResult(queryString, userInfo, userRole);
     }
 }

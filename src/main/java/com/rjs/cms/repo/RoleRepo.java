@@ -1,6 +1,6 @@
 package com.rjs.cms.repo;
 
-import com.rjs.cms.model.Role;
+import com.rjs.cms.model.enity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

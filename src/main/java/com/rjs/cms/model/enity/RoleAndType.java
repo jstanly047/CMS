@@ -1,4 +1,4 @@
-package com.rjs.cms.model;
+package com.rjs.cms.model.enity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

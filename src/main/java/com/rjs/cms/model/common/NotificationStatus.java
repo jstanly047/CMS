@@ -5,5 +5,6 @@ public enum NotificationStatus {
     FAILURE,
     TABLE_NOT_FOUND,
     COLUMN_NOT_FOUND,
+    ROLE_NOT_FOUND,
     DB_EXCEPTION;
 }

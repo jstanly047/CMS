@@ -1,7 +1,7 @@
 package com.rjs.cms.service.db;
 
-import com.rjs.cms.model.Role;
-import com.rjs.cms.model.RoleRelation;
+import com.rjs.cms.model.enity.Role;
+import com.rjs.cms.model.enity.RoleRelation;
 import com.rjs.cms.repo.RoleRelationRepo;
 import com.rjs.cms.repo.RoleRepo;
 import org.junit.Test;
@@ -26,13 +26,13 @@ public class RoleInfoCacheTest {
 
     @Test
     public void TestCheckRoleValue(){
-        List<Role> roles = Arrays.asList(new Role("Admin", 1L), new Role("RetailUser", 2L));
+        List<Role> roles = Arrays.asList(new Role("ADMIN", 1L), new Role("RETAIL_USER", 2L));
         roleRepo.saveAll(roles);
         roleInfoCache = new RoleInfoCache(roleRepo, roleRelationRepo);
         roleInfoCache.populateCache();
-        assertEquals(1L,roleInfoCache.getRoleValue("Admin"));
-        assertEquals(2L, roleInfoCache.getRoleValue("RetailUser"));
-        assertEquals(0L, roleInfoCache.getRoleValue("CustomerCare"));
+        assertEquals(1L,roleInfoCache.getRoleValue("ADMIN"));
+        assertEquals(2L, roleInfoCache.getRoleValue("RETAIL_USER"));
+        assertEquals(0L, roleInfoCache.getRoleValue("CUSTOMER_CARE"));
     }
 
     @Test

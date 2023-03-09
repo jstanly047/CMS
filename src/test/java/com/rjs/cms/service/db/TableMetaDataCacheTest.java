@@ -1,8 +1,8 @@
 package com.rjs.cms.service.db;
 
-import com.rjs.cms.model.RoleAndType;
-import com.rjs.cms.model.TableInfo;
-import com.rjs.cms.model.UserInfo;
+import com.rjs.cms.model.enity.RoleAndType;
+import com.rjs.cms.model.enity.TableInfo;
+import com.rjs.cms.model.restapi.UserInfo;
 import com.rjs.cms.model.common.DataType;
 import com.rjs.cms.model.common.FieldType;
 import com.rjs.cms.model.common.HashType;
@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.util.Pair;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
@@ -68,10 +69,10 @@ public class TableMetaDataCacheTest {
         tableMetaDataCache = new TableMetaDataCache(tableInfoRepo);
         tableMetaDataCache.populateCache();
         try {
-            assertEquals(tableMetaDataCache.getTableMeta("T1").getColumnsForSQL(new UserInfo("T1", "Admin", Arrays.asList("name", "phone", "address", "nid", "age"))).getValue(),
-                    "name, name_meta, phone, phone_meta, address, address_meta, nid, nid_show, nid_meta, age, age_meta");
-            assertEquals(tableMetaDataCache.getTableMeta("T1").getColumnsForSQL(new UserInfo("T1", "Admin", Arrays.asList("name", "phone","age"))).getValue(),
-                    "name, name_meta, phone, phone_meta, age, age_meta");
+            assertEquals(Pair.of("name, name_meta, phone, phone_meta, address, address_meta, nid, nid_show, nid_meta, age, age_meta", 11),
+                    tableMetaDataCache.getTableMeta("T1").getColumnsForSQL(new UserInfo("T1", "Admin", Arrays.asList("name", "phone", "address", "nid", "age"))).getValue());
+            assertEquals(Pair.of("name, name_meta, phone, phone_meta, age, age_meta", 6),
+                    tableMetaDataCache.getTableMeta("T1").getColumnsForSQL(new UserInfo("T1", "Admin", Arrays.asList("name", "phone","age"))).getValue());
         }catch (Exception e)
         {
             fail("Not Expected");
