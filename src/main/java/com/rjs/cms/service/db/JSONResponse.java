@@ -17,6 +17,8 @@ public class JSONResponse {
                 response.put(columnMetaData.getName(), (String) obj);
                 break;
             case CHAR:
+                response.put(columnMetaData.getName(), (Character) obj);
+                break;
             case SHORT:
             case INTEGER:
             case LONG:

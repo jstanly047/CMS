@@ -33,6 +33,21 @@ public class Notification {
     }
 
     public  static Notification getCannotSetHidden(String table, String column, String user){
-        return new Notification(NotificationStatus.ROLE_NOT_FOUND, "Cannot set hide [" + column + "] for table [" + table +"] for user [" + user + "]");
+        return new Notification(NotificationStatus.CAN_NOT_SET_HIDDEN, "Cannot set HIDDEN column [" + column + "] for table [" + table +"] for user [" + user + "]");
+    }
+
+    public static Notification getHiddenDataMustBeString(String table, String columnName){
+        return new Notification(NotificationStatus.INVALID_COLUMN, "Hidden column [" + columnName +"] must be string in table [" + table + "]");
+    }
+    public static Notification getTableAlreadyExist(String table){
+        return new Notification(NotificationStatus.TABLE_ALREADY_EXIST, "Table[" + table + "] already exist");
+    }
+
+    public static Notification getInvalidRoleAndType(String message){
+        return new Notification(NotificationStatus.INVALID_ROLE_TYPE, message);
+    }
+
+    public static Notification getInvalidRoleAndType(){
+        return new Notification(NotificationStatus.INVALID_ROLE_TYPE, "Invalid field type/hash type");
     }
 }

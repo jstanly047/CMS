@@ -79,6 +79,16 @@ public class TableMetaData {
         return returnValue;
     }
 
+    public Notification validate(){
+        for (Map.Entry<String, ColumnMetaData> entry : columnMetaDataMap.entrySet()){
+            if (entry.getValue().isHidden() && entry.getValue().getDataType() != DataType.STRING){
+                return Notification.getHiddenDataMustBeString(tableName, entry.getKey());
+            }
+        }
+
+        return Notification.getSuccess();
+    }
+
     public void put(ColumnMetaData columnMetaData) {
         columnMetaDataMap.put(columnMetaData.getName(), columnMetaData);
     }

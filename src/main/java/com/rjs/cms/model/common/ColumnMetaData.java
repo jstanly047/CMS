@@ -91,8 +91,11 @@ public class ColumnMetaData {
         return sql.toString();
     }
 
-    boolean isHidden() {
+    public boolean isHidden() {
         return roleAndType.getType() == FieldType.HIDDEN.getValue();
+    }
+    public boolean isProtected() {
+        return roleAndType.getType() == FieldType.PROTECTED.getValue();
     }
 }
 

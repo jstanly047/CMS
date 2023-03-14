@@ -14,6 +14,7 @@ import java.util.List;
 @Data
 public class TableMeta {
     private String name;
+    private Integer sizeOfUserId;
     private ArrayList<String> properties;
     private ArrayList<String> dataTypes;
     private ArrayList<Integer> sizes;
@@ -21,6 +22,7 @@ public class TableMeta {
     private ArrayList<String> fieldTypes;
     private ArrayList<String> hashTypes;
     private ArrayList<Integer> numberOfVisibleChars;
+    public static final String USER_FIELD_ID = "user_id";
 
     public void setName(String name){
         this.name = name.toLowerCase();
@@ -62,6 +64,8 @@ public class TableMeta {
 
     public TableMetaData getTableMetaData(final RoleInfoCache roleInfoCache) throws InvalidRoleAndType {
         TableMetaData tableMetaData = new TableMetaData(name);
+        tableMetaData.put(new ColumnMetaData(USER_FIELD_ID, DataType.STRING, sizeOfUserId,
+                RoleAndType.createRoleAndType(1, FieldType.NORMAL.getValue(), HashType.NONE.getValue()), 0));
         for (int i = 0; i < properties.size(); i++) {
             RoleAndType roleAndType = RoleAndType.createRoleAndType(roleInfoCache.getRoleValue(roles.get(i)),
                     FieldType.valueOf(fieldTypes.get(i)).getValue(),
