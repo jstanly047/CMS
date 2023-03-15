@@ -40,7 +40,7 @@ public class Notification {
         return new Notification(NotificationStatus.INVALID_COLUMN, "Hidden column [" + columnName +"] must be string in table [" + table + "]");
     }
     public static Notification getTableAlreadyExist(String table){
-        return new Notification(NotificationStatus.TABLE_ALREADY_EXIST, "Table[" + table + "] already exist");
+        return new Notification(NotificationStatus.TABLE_ALREADY_EXIST, "Table [" + table + "] already exist");
     }
 
     public static Notification getInvalidRoleAndType(String message){
@@ -49,5 +49,9 @@ public class Notification {
 
     public static Notification getInvalidRoleAndType(){
         return new Notification(NotificationStatus.INVALID_ROLE_TYPE, "Invalid field type/hash type");
+    }
+
+    public static Notification getCanNotSetRole(String tableName, String columnName, String role, String expectedRole){
+        return new Notification(NotificationStatus.CAN_NOT_SET_ROLE, "Can not set role [" + role + "] to column [" + columnName + "] in table [" + tableName + "]. Role should have parent role [" + expectedRole + "]");
     }
 }

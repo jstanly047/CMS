@@ -28,7 +28,9 @@ public class ColumnMetaDataMSTest {
             };
 
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.HIDDEN.getValue(), HashType.MD5.getValue()), 4, DataType.STRING.getValue(), 60),
-                     "FN NVARCHAR(60), FN_show NVARCHAR(4), FN_meta BIGINT");
+                     "FN NVARCHAR(60), FN_show NVARCHAR(4)");
+            check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.HIDDEN.getValue(), HashType.MD5.getValue()), 0, DataType.STRING.getValue(), 60),
+                    "FN NVARCHAR(60)");
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.PROTECTED.getValue(), HashType.MD5.getValue()), 4, DataType.STRING.getValue(), 60),
                          "FN NVARCHAR(60), FN_meta BIGINT");
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.NORMAL.getValue(), HashType.NONE.getValue()), 4, DataType.CHAR.getValue(), 60),

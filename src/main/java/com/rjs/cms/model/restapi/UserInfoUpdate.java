@@ -19,13 +19,11 @@ public class UserInfoUpdate extends UserInfo {
         String role;
         String fieldType;
         //Long hashType;
-        String showValue;
 
-        public ColumnInfo(Object value, String role, String fieldType, String showValue) {
+        public ColumnInfo(Object value, String role, String fieldType) {
             this.value = value;
             this.role = role;
             this.fieldType = fieldType.toUpperCase();
-            this.showValue = showValue;
         }
 
         public void setFieldType(String fieldType) {
@@ -39,7 +37,7 @@ public class UserInfoUpdate extends UserInfo {
 
     private List<ColumnInfo> columnsValues = new ArrayList<>();
 
-    public void add(Object value, String role, String fieldType, String showValue){
-        columnsValues.add(new ColumnInfo(value, role, fieldType, showValue));
+    public void add(Object value, String role, String fieldType){
+        columnsValues.add(new ColumnInfo(value, role, fieldType));
     }
 }

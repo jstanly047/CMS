@@ -69,7 +69,7 @@ public class TableMetaDataCacheTest {
         tableMetaDataCache = new TableMetaDataCache(tableInfoRepo);
         tableMetaDataCache.populateCache();
         try {
-            assertEquals(Pair.of("name, name_meta, phone, phone_meta, address, address_meta, nid, nid_show, nid_meta, age, age_meta", 11),
+            assertEquals(Pair.of("name, name_meta, phone, phone_meta, address, address_meta, nid, nid_show, age, age_meta", 10),
                     tableMetaDataCache.getTableMeta("T1").getColumnsForSQL(new UserInfo("T1", "Admin", Arrays.asList("name", "phone", "address", "nid", "age"))).getValue());
             assertEquals(Pair.of("name, name_meta, phone, phone_meta, age, age_meta", 6),
                     tableMetaDataCache.getTableMeta("T1").getColumnsForSQL(new UserInfo("T1", "Admin", Arrays.asList("name", "phone","age"))).getValue());

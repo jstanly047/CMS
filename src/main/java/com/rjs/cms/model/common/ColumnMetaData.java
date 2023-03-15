@@ -48,28 +48,30 @@ public class ColumnMetaData {
             sql.append("(");
             sql.append(size);
             sql.append(")");
-
-            if (isHidden()){
-                sql.append(", ");
-                sql.append(name);
-                sql.append(postFixShow);
-                sql.append(" ");
-                sql.append(ConvertDataTypeToString.getString(dataType));
-                sql.append("(");
-                sql.append(numberOfChar);
-                sql.append(")");
-            }
         }
         else {
             sql.append(" ");
             sql.append(ConvertDataTypeToString.getString(dataType));
         }
 
-        sql.append(", ");
-        sql.append(name);
-        sql.append(postFixMeta);
-        sql.append(" ");
-        sql.append(ConvertDataTypeToString.getString(DataType.LONG));
+        if (!isHidden()) {
+            sql.append(", ");
+            sql.append(name);
+            sql.append(postFixMeta);
+            sql.append(" ");
+            sql.append(ConvertDataTypeToString.getString(DataType.LONG));
+        }
+        else if (numberOfChar > 0){
+            sql.append(", ");
+            sql.append(name);
+            sql.append(postFixShow);
+            sql.append(" ");
+            sql.append(ConvertDataTypeToString.getString(dataType));
+            sql.append("(");
+            sql.append(numberOfChar);
+            sql.append(")");
+        }
+
         return sql.toString();
     }
 
@@ -77,12 +79,15 @@ public class ColumnMetaData {
         StringBuilder sql = new StringBuilder();
         sql.append(name);
 
-        if (dataType == DataType.STRING){
-            if (roleAndType.getType() == FieldType.HIDDEN.getValue()){
+        if (roleAndType.getType() == FieldType.HIDDEN.getValue()){
+
+            if ( numberOfChar > 0) {
                 sql.append(", ");
                 sql.append(name);
                 sql.append(postFixShow);
             }
+
+            return sql.toString();
         }
 
         sql.append(", ");

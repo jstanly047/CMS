@@ -16,21 +16,6 @@ public class TableMetaData {
         this.tableName = tableName;
     }
 
-    public String getSQLColumn(){
-        if (columnMetaDataMap.isEmpty())
-        {
-            return "";
-        }
-
-        StringBuilder columns = new StringBuilder();
-        for (Map.Entry<String, ColumnMetaData> entry: columnMetaDataMap.entrySet()){
-            columns.append(entry.getValue().getSQLColumn());
-            columns.append(", ");
-        }
-
-        columns.delete(columns.length()-2, columns.length());
-        return columns.toString();
-    }
 
     public String getCreateSQL(){
         if (columnMetaDataMap.isEmpty())
@@ -71,9 +56,10 @@ public class TableMetaData {
 
             columns.append(columnMetaData.getSQLColumn());
             columns.append(", ");
-            int fields = columnMetaData.isHidden() ? 3 : 2;
+            int fields = columnMetaData.isHidden() && columnMetaData.getNumberOfChar() < 1 ? 1 : 2;
             countFields += fields;
         }
+
         columns.delete(columns.length()-2, columns.length());
         returnValue.setValue(Pair.of(columns.toString(), countFields));
         return returnValue;

@@ -111,10 +111,14 @@ public class RoleInfoCache {
         localRelationCount.set(totalRelations);
     }
 
-    public boolean userHasRole(long userRole, long role){
-        String userRoleName = roleIDToNameMap.get(userRole);
+    public boolean userHasRole(long readingUserRole, long role){
+        if (readingUserRole == role){
+            return  true;
+        }
 
-        if (userRoleName == null){
+        String readingUserRoleName = roleIDToNameMap.get(readingUserRole);
+
+        if (readingUserRoleName == null){
             return  false;
         }
 
@@ -124,11 +128,16 @@ public class RoleInfoCache {
             return  false;
         }
 
-        return rolesCache.get(userRoleName).hasRole(rolesCache.get(roleName));
+        return rolesCache.get(readingUserRoleName).hasRole(rolesCache.get(roleName));
     }
 
     public long getRoleValue(String role){
         RoleNode roleNode = rolesCache.get(role.toUpperCase());
         return roleNode != null ? roleNode.roleId : 0L;
+    }
+
+    public String getRoleString(long role){
+        String roleName = roleIDToNameMap.get(role);
+        return  roleName == null ? "" : roleName;
     }
 }

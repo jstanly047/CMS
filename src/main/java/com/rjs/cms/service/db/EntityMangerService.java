@@ -27,6 +27,7 @@ public class EntityMangerService {
     private EntityManager entityManager;
     private final RoleInfoCache roleInfoCache;
     private final TableMetaDataCache tableMetaDataCache;
+    static final int MAX_ALLOWED_HIDDEN_STRING = 20;
 
     @Autowired
     public EntityMangerService(RoleInfoCache roleInfoCache, TableMetaDataCache tableMetaDataCache){
@@ -42,8 +43,18 @@ public class EntityMangerService {
         for (final String property : userInfo.getProperties()){
             final ColumnMetaData columnMetaData = tableMetaData.getColumnMetaData(property);
             if (columnMetaData.isHidden()){
-                retValues.put(row[offsetIndex+1], columnMetaData);
-                offsetIndex += 3;
+                if (columnMetaData.getNumberOfChar() > 0) {
+                    String data = (String) row[offsetIndex+1];
+                    int hidden = columnMetaData.getSize() - columnMetaData.getNumberOfChar();
+                    hidden = hidden > MAX_ALLOWED_HIDDEN_STRING ? MAX_ALLOWED_HIDDEN_STRING : hidden;
+                    data = "*".repeat(hidden) + data;
+                    retValues.put(data, columnMetaData);
+                    offsetIndex += 2;
+                }else {
+                    int hidden = columnMetaData.getSize() > MAX_ALLOWED_HIDDEN_STRING ? MAX_ALLOWED_HIDDEN_STRING : columnMetaData.getSize();
+                    retValues.put( "*".repeat(hidden) , columnMetaData);
+                    offsetIndex++;
+                }
                 continue;
             }
 
@@ -52,18 +63,15 @@ public class EntityMangerService {
             if (columnMetaData.isProtected() == false || roleInfoCache.userHasRole(userRole, roleAndType.getRole())){
                 retValues.put(row[offsetIndex], columnMetaData);
             }else if (columnMetaData.getNumberOfChar() > 0){
-                int n = columnMetaData.getSize() - columnMetaData.getNumberOfChar();
-                String result;
-
-                if (n > 0) {
-                    result = new String(new char[n]).replace("\0", String.valueOf('X'));
-                    result += ((String) row[offsetIndex]).substring(n);
-                }
-                else{
-                    result = new String(new char[columnMetaData.getSize()]).replace("\0", String.valueOf('X'));
-                }
-
+                int hidden = columnMetaData.getSize() - columnMetaData.getNumberOfChar();
+                hidden = hidden > MAX_ALLOWED_HIDDEN_STRING ? MAX_ALLOWED_HIDDEN_STRING : hidden;
+                String result = "*".repeat(hidden);
+                result += ((String) row[offsetIndex]).substring(hidden);
                 retValues.put(result, columnMetaData);
+            }
+            else{
+                int hidden = columnMetaData.getSize() > MAX_ALLOWED_HIDDEN_STRING ? MAX_ALLOWED_HIDDEN_STRING : columnMetaData.getSize();
+                retValues.put("*".repeat(hidden), columnMetaData);
             }
 
             offsetIndex += 2;
@@ -151,9 +159,10 @@ public class EntityMangerService {
         query.setParameter(pIndex++, userInfoUpdate.getUserID());
 
         try {
-            int propertyIndex = 0;
+            int propertyIndex = -1;
             for (UserInfoUpdate.ColumnInfo columnValue : userInfoUpdate.getColumnsValues())
             {
+                propertyIndex++;
                 ColumnMetaData columnMetaData = tableMetaData.getColumnMetaData(userInfoUpdate.getProperties().get(propertyIndex));
                 query.setParameter(pIndex++, columnValue.getValue());
                 Long role = 0L;
@@ -183,12 +192,23 @@ public class EntityMangerService {
 
                 RoleAndType roleAndType = RoleAndType.createRoleAndType(role, fieldType, columnMetaData.getRoleAndType().getHashType());
 
-                if (roleAndType.getType() == FieldType.HIDDEN.getValue()){
-                    query.setParameter(pIndex++, columnValue.getShowValue());
+                if (columnMetaData.getRoleAndType().getType() == FieldType.HIDDEN.getValue()){
+                    if (columnMetaData.getNumberOfChar() > 0) {
+                        String value = (String) columnValue.getValue();
+                        query.setParameter(pIndex++, value.substring(value.length() - columnMetaData.getNumberOfChar()));
+                    }
+
+                    continue;
+                }
+
+                if (columnMetaData.getRoleAndType().getType() == FieldType.PROTECTED.getValue()
+                        && roleInfoCache.userHasRole(roleAndType.getRole(),columnMetaData.getRoleAndType().getRole()) == false){
+                    return  Notification.getCanNotSetRole(tableMetaData.getTableName(), columnMetaData.getName(),
+                            roleInfoCache.getRoleString(roleAndType.getRole()),
+                            roleInfoCache.getRoleString(columnMetaData.getRoleAndType().getRole()));
                 }
 
                 query.setParameter(pIndex++, roleAndType.getRoleAndType());
-                propertyIndex++;
             }
 
             query.executeUpdate();

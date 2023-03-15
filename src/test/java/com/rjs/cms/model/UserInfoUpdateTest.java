@@ -18,9 +18,9 @@ public class UserInfoUpdateTest {
         String json = "{\"domain\":\"customersdetails\"," +
                 "\"userID\":\"username\"," +
                 "\"properties\":[\"name\",\"address\",\"age\"]," +
-                "\"columnsValues\":[{\"value\":\"John\",\"role\":\"*\",\"fieldType\":\"NORMAL\",\"showValue\":\"\"}," +
-                                    "{\"value\":\"Blk 1 East Street\",\"role\":\"ADD_CUSTOMER\",\"fieldType\":\"PROTECTED\",\"showValue\":\"\"}," +
-                                    "{\"value\":\"age\",\"role\":\"ADD_CUSTOMER\",\"fieldType\":\"HIDDEN\",\"showValue\":\"\"}]" +
+                "\"columnsValues\":[{\"value\":\"John\",\"role\":\"*\",\"fieldType\":\"NORMAL\"}," +
+                                    "{\"value\":\"Blk 1 East Street\",\"role\":\"ADD_CUSTOMER\",\"fieldType\":\"PROTECTED\"}," +
+                                    "{\"value\":\"age\",\"role\":\"ADD_CUSTOMER\",\"fieldType\":\"HIDDEN\"}]" +
                 "}";
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -30,9 +30,9 @@ public class UserInfoUpdateTest {
         MatcherAssert.assertThat(userInfoUpdate.getProperties(),
                 Matchers.equalTo(new ArrayList<>(List.of("name", "address", "age"))));
         MatcherAssert.assertThat(userInfoUpdate.getColumnsValues(),
-                Matchers.equalTo(new ArrayList<>(List.of(new UserInfoUpdate.ColumnInfo("John", "*", "NORMAL", ""),
-                        new UserInfoUpdate.ColumnInfo("Blk 1 East Street", "ADD_CUSTOMER", "PROTECTED", ""),
-                        new UserInfoUpdate.ColumnInfo("age", "ADD_CUSTOMER", "HIDDEN", "")))));
+                Matchers.equalTo(new ArrayList<>(List.of(new UserInfoUpdate.ColumnInfo("John", "*", "NORMAL"),
+                        new UserInfoUpdate.ColumnInfo("Blk 1 East Street", "ADD_CUSTOMER", "PROTECTED"),
+                        new UserInfoUpdate.ColumnInfo("age", "ADD_CUSTOMER", "HIDDEN")))));
     }
 
     @Test
@@ -40,9 +40,9 @@ public class UserInfoUpdateTest {
         String json = "{\"domain\":\"CustomersDetails\"," +
                 "\"userID\":\"UserName\"," +
                 "\"properties\":[\"NaMe\",\"address\",\"AGE\"]," +
-                "\"columnsValues\":[{\"value\":\"John\",\"role\":\"*\",\"fieldType\":\"normal\",\"showValue\":\"\"}," +
-                "{\"value\":\"Blk 1 East Street\",\"role\":\"add_customer\",\"fieldType\":\"protected\",\"showValue\":\"\"}," +
-                "{\"value\":\"age\",\"role\":\"Add_Customer\",\"fieldType\":\"hiDDen\",\"showValue\":\"\"}]" +
+                "\"columnsValues\":[{\"value\":\"John\",\"role\":\"*\",\"fieldType\":\"normal\"}," +
+                "{\"value\":\"Blk 1 East Street\",\"role\":\"add_customer\",\"fieldType\":\"protected\"}," +
+                "{\"value\":\"age\",\"role\":\"Add_Customer\",\"fieldType\":\"hiDDen\"}]" +
                 "}";
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -52,8 +52,8 @@ public class UserInfoUpdateTest {
         MatcherAssert.assertThat(userInfoUpdate.getProperties(),
                 Matchers.equalTo(new ArrayList<>(List.of("name", "address", "age"))));
         MatcherAssert.assertThat(userInfoUpdate.getColumnsValues(),
-                Matchers.equalTo(new ArrayList<>(List.of(new UserInfoUpdate.ColumnInfo("John", "*", "NORMAL", ""),
-                        new UserInfoUpdate.ColumnInfo("Blk 1 East Street", "ADD_CUSTOMER", "PROTECTED", ""),
-                        new UserInfoUpdate.ColumnInfo("age", "ADD_CUSTOMER", "HIDDEN", "")))));
+                Matchers.equalTo(new ArrayList<>(List.of(new UserInfoUpdate.ColumnInfo("John", "*", "NORMAL"),
+                        new UserInfoUpdate.ColumnInfo("Blk 1 East Street", "ADD_CUSTOMER", "PROTECTED"),
+                        new UserInfoUpdate.ColumnInfo("age", "ADD_CUSTOMER", "HIDDEN")))));
     }
 }

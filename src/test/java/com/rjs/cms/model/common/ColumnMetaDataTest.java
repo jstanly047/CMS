@@ -41,7 +41,9 @@ public class ColumnMetaDataTest {
             };
 
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.HIDDEN.getValue(), HashType.MD5.getValue()), 4, DataType.STRING.getValue(), 60),
-                    "FN, FN_show, FN_meta");
+                    "FN, FN_show");
+            check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.HIDDEN.getValue(), HashType.MD5.getValue()), 0, DataType.STRING.getValue(), 60),
+                    "FN");
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.PROTECTED.getValue(), HashType.MD5.getValue()), 4, DataType.STRING.getValue(), 60),
                     "FN, FN_meta");
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.NORMAL.getValue(), HashType.MD5.getValue()), 4, DataType.STRING.getValue(), 60),

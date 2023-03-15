@@ -29,7 +29,9 @@ public class ColumnMetaDataOracleTest {
             };
 
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.HIDDEN.getValue(), HashType.MD5.getValue()), 4, DataType.STRING.getValue(), 60),
-                     "FN VARCHAR2(60), FN_show VARCHAR2(4), FN_meta NUMBER(19)");
+                     "FN VARCHAR2(60), FN_show VARCHAR2(4)");
+            check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.HIDDEN.getValue(), HashType.MD5.getValue()), 0, DataType.STRING.getValue(), 60),
+                    "FN VARCHAR2(60)");
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.PROTECTED.getValue(), HashType.MD5.getValue()), 4, DataType.STRING.getValue(), 60),
                          "FN VARCHAR2(60), FN_meta NUMBER(19)");
             check.accept(new TableInfo("T", "FN", RoleAndType.createRoleAndType(1L, FieldType.NORMAL.getValue(), HashType.NONE.getValue()), 4, DataType.CHAR.getValue(), 60),

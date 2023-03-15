@@ -43,8 +43,10 @@ public class RoleInfoCacheTest {
         roleRelationRepo.saveAll(roleRelations);
         roleInfoCache = new RoleInfoCache(roleRepo, roleRelationRepo);
         roleInfoCache.populateCache();
+        assertTrue(roleInfoCache.userHasRole(1, 1));
         assertTrue(roleInfoCache.userHasRole(1, 2));
-        assertFalse(roleInfoCache.userHasRole(2, 1));
         assertFalse(roleInfoCache.userHasRole(1, 3));
+        assertFalse(roleInfoCache.userHasRole(2, 1));
+        assertTrue(roleInfoCache.userHasRole(2, 2));
     }
 }
